@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080a10" />
+  <title>Sys Kids — Mundo Mágico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="child-ui">
+  <div class="app">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Gesture Ink">
+        <span class="brand-mark">SK</span>
+        <span><strong>Sys Kids</strong> Mundo Mágico</span>
+      </a>
+      <div class="status-pill" id="statusPill">
+        <span class="status-dot"></span>
+        <span id="statusText">Câmera desligada</span>
+      </div>
+      <div class="top-actions adult-controls">
+        <button class="icon-button" id="undoButton" title="Desfazer (Ctrl+Z)" disabled>↶</button>
+        <button class="icon-button" id="redoButton" title="Refazer (Ctrl+Y)" disabled>↷</button>
+        <button class="secondary-button" id="clearButton">Limpar</button>
+        <button class="primary-button" id="cameraButton"><span class="camera-icon">◉</span> Ativar câmera</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="stage" id="stage">
+        <video id="camera" playsinline muted></video>
+        <canvas id="worldCanvas"></canvas>
+        <canvas id="paintCanvas"></canvas>
+        <canvas id="trackingCanvas"></canvas>
+        <div class="camera-placeholder auto-starting" id="cameraPlaceholder">
+          <div class="placeholder-icon">🪄</div>
+          <h1>Entre no Mundo Mágico.</h1>
+          <p>Use sua mão para criar amigos, explorar mundos e viver aventuras.</p>
+          <button class="primary-button large" id="startButton">Começar a aventura</button>
+        </div>
+        <div class="gesture-badge" id="gestureBadge">
+          <span id="gestureIcon">•</span>
+          <div><small>GESTO ATUAL</small><strong id="gestureName">Aguardando mão</strong></div>
+        </div>
+        <div class="hint" id="hint">Mantenha a mão a uma distância confortável da câmera</div>
+        <div class="challenge-bar" id="challengeBar"><span id="challengeIcon">⭐</span><div><small>DESAFIO ATUAL</small><strong id="challengeText">Desenhe livremente!</strong></div><b id="score">0 pts</b></div>
+        <div class="celebration" id="celebration"></div>
+        <div class="companion" id="companion"><div class="mascot" id="mascot"><img id="mascotImage" src="assets/mascots/lumi-ocean.png" alt="Lumi" /></div><div class="speech"><strong id="mascotName">Lumi</strong><span id="companionSpeech">Olá! Vamos criar magia?</span></div></div>
+        <div class="magic-progress"><span>✨</span><div><i id="magicFill"></i></div><b id="worldName">Oceano Encantado</b></div>
+        <div class="magic-cursor" id="magicCursor">✦</div>
+      </section>
+
+      <aside class="panel adult-controls">
+        <div class="panel-heading">
+          <span class="eyebrow">CONTROLES</span>
+          <h2>Seu estúdio no ar</h2>
+        </div>
+
+        <div class="tool-group">
+          <label>Cor do traço</label>
+          <div class="colors" id="colors">
+            <button class="color active" data-color="#8bff6a" style="--color:#8bff6a" aria-label="Verde"></button>
+            <button class="color" data-color="#ff6b8a" style="--color:#ff6b8a" aria-label="Rosa"></button>
+            <button class="color" data-color="#58d9ff" style="--color:#58d9ff" aria-label="Azul"></button>
+            <button class="color" data-color="#ffd45c" style="--color:#ffd45c" aria-label="Amarelo"></button>
+            <button class="color" data-color="#ffffff" style="--color:#ffffff" aria-label="Branco"></button>
+            <input type="color" id="customColor" value="#8bff6a" title="Cor personalizada" />
+          </div>
+        </div>
+
+        <div class="tool-group">
+          <div class="label-row"><label for="brushSize">Espessura</label><output id="brushOutput">8 px</output></div>
+          <input type="range" id="brushSize" min="3" max="30" value="8" />
+        </div>
+
+        <div class="tool-group">
+          <label for="brushType">Pincel mágico</label>
+          <select id="brushType"><option value="neon">✨ Neon</option><option value="rainbow">🌈 Arco-íris</option><option value="stars">⭐ Estrelas</option><option value="bubbles">🫧 Bolhas</option><option value="fire">🔥 Fogo</option><option value="classic">🖍️ Clássico</option></select>
+        </div>
+        <div class="feature-grid">
+          <div class="auto-feature">◯<small>Formas auto</small></div><div class="auto-feature">🪣<small>Preenchimento auto</small></div>
+          <button id="animateButton">🐟<small>Dar vida</small></button><button id="duplicateButton">⧉<small>Duplicar</small></button>
+          <button id="challengeButton">🏆<small>Desafio</small></button><button id="voiceButton">🎤<small>Voz</small></button>
+          <button id="galleryButton">🖼️<small>Galeria</small></button><button id="parentsButton">⚙️<small>Responsáveis</small></button>
+        </div>
+
+        <div class="gesture-list">
+          <div class="gesture-item active" id="drawCard"><span class="gesture-hand">☝</span><div><strong>Desenhar</strong><small>Levante só o indicador</small></div></div>
+          <div class="gesture-item" id="moveCard"><span class="gesture-hand">🤏</span><div><strong>Mover</strong><small>Faça uma pinça sobre o traço</small></div></div>
+          <div class="gesture-item" id="eraseCard"><span class="gesture-hand">✋</span><div><strong>Apagar</strong><small>Passe a palma aberta</small></div></div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="toggle-row">
+          <div><strong>Mostrar mão digital</strong><small>Exibe somente a mão detectada</small></div>
+          <label class="switch"><input id="skeletonToggle" type="checkbox" checked /><span></span></label>
+        </div>
+        <button class="download-button" id="downloadButton">↓ &nbsp;Salvar desenho em PNG</button>
+        <p class="shortcut">Dica: use <kbd>Espaço</kbd> para pausar o desenho</p>
+      </aside>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <dialog id="galleryDialog"><button class="dialog-close">×</button><h2>Minha galeria</h2><div id="galleryGrid"></div><button class="primary-button" id="saveGalleryButton">Guardar desenho atual</button></dialog>
+  <dialog id="parentsDialog"><button class="dialog-close">×</button><h2>Área dos responsáveis</h2><p class="parent-note">Acesso oculto: pressione <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>P</kbd>.</p><label>Nome da criança<input id="childName" placeholder="Artista" /></label><label>Dificuldade<select id="difficulty"><option value="easy">Fácil</option><option value="normal">Normal</option><option value="hard">Difícil</option></select></label><label>Tempo da atividade (minutos)<input id="sessionMinutes" type="number" min="5" max="120" value="30" /></label><label class="check"><input id="soundToggle" type="checkbox" checked /> Sons e comemorações</label><button class="primary-button" id="saveParents">Salvar configurações</button></dialog>
+  <script type="module" src="app.js"></script>
+  <script type="module" src="kids-features.js"></script>
+  <script type="module" src="kids-world.js"></script>
+</body>
+</html>
